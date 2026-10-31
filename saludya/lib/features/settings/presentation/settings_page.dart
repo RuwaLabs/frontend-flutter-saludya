@@ -147,10 +147,12 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  void _openGeneralSettings() {
+  Future<void> _openGeneralSettings() async {
     setState(() {
       _currentView = 0;
     });
+
+    await _loadSettings();
   }
 
   Future<void> _saveCapacity(int capacity) async {
