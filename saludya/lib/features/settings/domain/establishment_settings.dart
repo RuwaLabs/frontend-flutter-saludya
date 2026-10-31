@@ -1,7 +1,4 @@
-enum BookingOrderScope {
-  global,
-  perSpecialty,
-}
+enum BookingOrderScope { global, perSpecialty }
 
 class EstablishmentSettings {
   final int maxCapacityPerSlot;
@@ -42,9 +39,7 @@ class EstablishmentSettings {
     }
 
     if (postCallToleranceMinutes < 0) {
-      errors.add(
-        'La tolerancia posterior a la llamada no puede ser negativa.',
-      );
+      errors.add('La tolerancia posterior a la llamada no puede ser negativa.');
     }
 
     if (reassignmentResponseTimeoutMin < 0) {
@@ -78,21 +73,17 @@ class EstablishmentSettings {
     bool? attendanceQueueVisible,
   }) {
     return EstablishmentSettings(
-      maxCapacityPerSlot:
-          maxCapacityPerSlot ?? this.maxCapacityPerSlot,
+      maxCapacityPerSlot: maxCapacityPerSlot ?? this.maxCapacityPerSlot,
       intervalDurationMinutes:
           intervalDurationMinutes ?? this.intervalDurationMinutes,
-      bookingOrderScope:
-          bookingOrderScope ?? this.bookingOrderScope,
+      bookingOrderScope: bookingOrderScope ?? this.bookingOrderScope,
       checkInToleranceMinutes:
           checkInToleranceMinutes ?? this.checkInToleranceMinutes,
       postCallToleranceMinutes:
           postCallToleranceMinutes ?? this.postCallToleranceMinutes,
       reassignmentResponseTimeoutMin:
-          reassignmentResponseTimeoutMin ??
-          this.reassignmentResponseTimeoutMin,
-      bookingCutoffTime:
-          bookingCutoffTime ?? this.bookingCutoffTime,
+          reassignmentResponseTimeoutMin ?? this.reassignmentResponseTimeoutMin,
+      bookingCutoffTime: bookingCutoffTime ?? this.bookingCutoffTime,
       cancellationDeadlineHours:
           cancellationDeadlineHours ?? this.cancellationDeadlineHours,
       attendanceQueueVisible:
