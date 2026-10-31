@@ -10,16 +10,10 @@ final GetIt getIt = GetIt.instance;
 void setupDependencies() {
   const baseUrl = 'http://3.129.217.49:8080';
 
-  getIt.registerLazySingleton<SettingsApi>(
-    () => SettingsApi(
-      baseUrl: baseUrl,
-    ),
-  );
+  getIt.registerLazySingleton<SettingsApi>(() => SettingsApi(baseUrl: baseUrl));
 
   getIt.registerLazySingleton<SettingsRepository>(
-    () => SettingsRepositoryImpl(
-      api: getIt<SettingsApi>(),
-    ),
+    () => SettingsRepositoryImpl(api: getIt<SettingsApi>()),
   );
 
   getIt.registerLazySingleton<GetEstablishmentSettingsUseCase>(
