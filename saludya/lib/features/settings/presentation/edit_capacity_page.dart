@@ -49,17 +49,17 @@ class _EditCapacityPageState extends State<EditCapacityPage> {
     final capacity = int.tryParse(_capacityController.text);
 
     if (capacity == null || capacity <= 0) {
-  await showDialog<bool>(
-    context: context,
-    builder: (context) => const RuleValidationDialog(
-      message:
-          'La capacidad máxima por bloque debe ser mayor que cero. '
-          'Revisa el valor ingresado antes de continuar.',
-    ),
-  );
+      await showDialog<bool>(
+        context: context,
+        builder: (context) => const RuleValidationDialog(
+          message:
+              'La capacidad máxima por bloque debe ser mayor que cero. '
+              'Revisa el valor ingresado antes de continuar.',
+        ),
+      );
 
-  return;
-}
+      return;
+    }
 
     setState(() {
       _isSaving = true;
@@ -73,6 +73,7 @@ class _EditCapacityPageState extends State<EditCapacityPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('No se pudo guardar la capacidad: $error'),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } finally {
@@ -144,9 +145,7 @@ class _EditCapacityPageState extends State<EditCapacityPage> {
                 controller: _capacityController,
                 enabled: !_isSaving,
                 keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 style: const TextStyle(
                   fontSize: 14,
                   color: EditCapacityPage.textColor,
@@ -245,10 +244,7 @@ class _EditCapacityPageState extends State<EditCapacityPage> {
                   ),
                   child: const Text(
                     'Cancelar',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
