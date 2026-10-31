@@ -30,9 +30,7 @@ class _RuleEditDialogState extends State<RuleEditDialog> {
   void initState() {
     super.initState();
 
-    _controller = TextEditingController(
-      text: widget.initialValue,
-    );
+    _controller = TextEditingController(text: widget.initialValue);
   }
 
   @override
@@ -46,8 +44,7 @@ class _RuleEditDialogState extends State<RuleEditDialog> {
 
     if (value == null || value < 0) {
       setState(() {
-        _errorMessage =
-            'Ingresa un número válido mayor o igual a cero.';
+        _errorMessage = 'Ingresa un número válido mayor o igual a cero.';
       });
       return;
     }
@@ -61,9 +58,7 @@ class _RuleEditDialogState extends State<RuleEditDialog> {
       backgroundColor: Colors.white,
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -100,12 +95,12 @@ class _RuleEditDialogState extends State<RuleEditDialog> {
             TextField(
               controller: _controller,
               autofocus: true,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: false,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               onChanged: (_) {
                 if (_errorMessage != null) {
                   setState(() {
@@ -161,10 +156,7 @@ class _RuleEditDialogState extends State<RuleEditDialog> {
                 ),
                 child: const Text(
                   'Actualizar',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -176,19 +168,14 @@ class _RuleEditDialogState extends State<RuleEditDialog> {
                 onPressed: () => Navigator.pop(context),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: RuleEditDialog.primaryColor,
-                  side: const BorderSide(
-                    color: RuleEditDialog.primaryColor,
-                  ),
+                  side: const BorderSide(color: RuleEditDialog.primaryColor),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: const Text(
                   'Cancelar',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
