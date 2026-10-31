@@ -11,10 +11,7 @@ class SettingsRepositoryException implements Exception {
   final String message;
   final int? statusCode;
 
-  const SettingsRepositoryException({
-    required this.message,
-    this.statusCode,
-  });
+  const SettingsRepositoryException({required this.message, this.statusCode});
 
   @override
   String toString() => message;
@@ -23,9 +20,7 @@ class SettingsRepositoryException implements Exception {
 class SettingsRepositoryImpl implements SettingsRepository {
   final SettingsApi api;
 
-  SettingsRepositoryImpl({
-    required this.api,
-  });
+  SettingsRepositoryImpl({required this.api});
 
   @override
   Future<EstablishmentSettings> getSettings() async {
@@ -37,7 +32,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
       throw _translateApiException(error);
     } on SocketException {
       throw const SettingsRepositoryException(
-        message: 'No se pudo conectar con el servidor. '
+        message:
+            'No se pudo conectar con el servidor. '
             'Comprueba tu conexión a Internet.',
       );
     } on http.ClientException {
@@ -65,7 +61,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
       throw _translateApiException(error);
     } on SocketException {
       throw const SettingsRepositoryException(
-        message: 'No se pudo conectar con el servidor. '
+        message:
+            'No se pudo conectar con el servidor. '
             'Comprueba tu conexión a Internet.',
       );
     } on http.ClientException {
