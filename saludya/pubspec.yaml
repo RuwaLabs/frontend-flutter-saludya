@@ -14,6 +14,8 @@ dependencies:
   sqflite: ^2.4.5
   path: ^1.9.1
   flutter_launcher_icons: ^0.14.4
+  dio: ^5.7.0
+  mobile_scanner: ^6.0.0
 
 dev_dependencies:
   flutter_test:
