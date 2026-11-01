@@ -98,7 +98,7 @@ class QrRepositoryImpl implements QrRepository {
     final appts = (await api.getAppointmentsByDate(date))
         .map((j) => AppointmentDto.fromJson(j as Map<String, dynamic>))
         .where((a) => a.status != 'CANCELLED');
-    final slotIds = {...appts.map((a) => a.timeSlotId), if (_preferredSlotId != null) _preferredSlotId!};
+    final slotIds = {...appts.map((a) => a.timeSlotId), ?_preferredSlotId};
     if (slotIds.isEmpty) return null;
 
     final slots = await Future.wait(slotIds.map((id) async => TimeSlotDto.fromJson(await api.getTimeSlot(id))));
