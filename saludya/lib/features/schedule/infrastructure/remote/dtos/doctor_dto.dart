@@ -14,7 +14,7 @@ class DoctorDto {
   factory DoctorDto.fromJson(Map<String, dynamic> json) {
     return DoctorDto(
       id: json['id'] as int,
-      specialityId: json['specialityId'] as int,
+      specialityId: json['specialtyId'] as int,
       name: json['name'] as String,
       lastname: json['lastname'] as String,
     );

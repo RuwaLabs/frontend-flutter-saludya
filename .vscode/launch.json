@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SaludYa Schedule (Chrome)",
+      "type": "dart",
+      "request": "launch",
+      "program": "saludya/lib/main.dart",
+      "cwd": "${workspaceFolder}/saludya",
+      "deviceId": "chrome",
+      "env": {
+        "CHROME_EXECUTABLE": "/usr/bin/google-chrome-stable"
+      }
+    }
+  ]
+}

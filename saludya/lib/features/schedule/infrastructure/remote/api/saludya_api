@@ -1,0 +1,176 @@
+import '../dtos/appoinment_dto.dart';
+import '../dtos/doctor_dto.dart';
+import '../dtos/speciality_dto.dart';
+import '../dtos/time_slot_dto.dart';
+
+class SaludYaApi {
+	final List<AppointmentDto> _appointments = [
+		AppointmentDto(
+			id: 1,
+			timeSlotId: 1,
+			patientId: 101,
+			bookingOrder: 1,
+			bookingCode: 'SY-0001',
+			status: 'confirmed',
+			createdAt: DateTime(2026, 1, 10, 9),
+			updatedAt: DateTime(2026, 1, 10, 9),
+		),
+	];
+
+	final List<DoctorDto> _doctors = const [
+		DoctorDto(
+			id: 1,
+			specialityId: 1,
+			name: 'Laura',
+			lastname: 'Gomez',
+		),
+		DoctorDto(
+			id: 2,
+			specialityId: 2,
+			name: 'Carlos',
+			lastname: 'Mendoza',
+		),
+	];
+
+	final List<SpecialityDto> _specialities = const [
+		SpecialityDto(
+			id: 1,
+			name: 'Medicina general',
+			description: 'Atencion medica primaria.',
+		),
+		SpecialityDto(
+			id: 2,
+			name: 'Cardiologia',
+			description: 'Prevencion y tratamiento cardiovascular.',
+		),
+	];
+
+	final List<TimeSlotDto> _timeSlots = [
+		TimeSlotDto(
+			id: 1,
+			doctorId: 1,
+			date: DateTime(2026, 11, 3),
+			startHour: DateTime(2026, 11, 3, 8),
+			endHour: DateTime(2026, 11, 3, 9),
+			room: 'Consultorio 101',
+			maxCapacity: 1,
+			currentBookings: 1,
+			status: 'full',
+		),
+		TimeSlotDto(
+			id: 2,
+			doctorId: 1,
+			date: DateTime(2026, 11, 3),
+			startHour: DateTime(2026, 11, 3, 9),
+			endHour: DateTime(2026, 11, 3, 10),
+			room: 'Consultorio 101',
+			maxCapacity: 1,
+			currentBookings: 0,
+			status: 'available',
+		),
+		TimeSlotDto(
+			id: 3,
+			doctorId: 2,
+			date: DateTime(2026, 11, 4),
+			startHour: DateTime(2026, 11, 4, 10),
+			endHour: DateTime(2026, 11, 4, 11),
+			room: 'Consultorio 202',
+			maxCapacity: 1,
+			currentBookings: 0,
+			status: 'available',
+		),
+	];
+
+	Future<List<AppointmentDto>> getAppointments() async {
+		return List.unmodifiable(_appointments);
+	}
+
+	Future<AppointmentDto?> getAppointmentById(int id) async {
+		for (final appointment in _appointments) {
+			if (appointment.id == id) return appointment;
+		}
+		return null;
+	}
+
+	Future<List<AppointmentDto>> getAppointmentsByPatient(int patientId) async {
+		return List.unmodifiable(
+			_appointments.where((appointment) => appointment.patientId == patientId),
+		);
+	}
+
+	Future<void> cancelAppointment(int id) async {
+		final index = _appointments.indexWhere((appointment) => appointment.id == id);
+		if (index == -1) return;
+
+		final appointment = _appointments[index];
+		_appointments[index] = AppointmentDto(
+			id: appointment.id,
+			timeSlotId: appointment.timeSlotId,
+			patientId: appointment.patientId,
+			bookingOrder: appointment.bookingOrder,
+			bookingCode: appointment.bookingCode,
+			status: 'cancelled',
+			createdAt: appointment.createdAt,
+			updatedAt: DateTime.now(),
+		);
+	}
+
+	Future<List<DoctorDto>> getDoctors() async {
+		return List.unmodifiable(_doctors);
+	}
+
+	Future<DoctorDto?> getDoctorById(int id) async {
+		for (final doctor in _doctors) {
+			if (doctor.id == id) return doctor;
+		}
+		return null;
+	}
+
+	Future<List<SpecialityDto>> getSpecialities() async {
+		return List.unmodifiable(_specialities);
+	}
+
+	Future<SpecialityDto?> getSpecialityById(int id) async {
+		for (final speciality in _specialities) {
+			if (speciality.id == id) return speciality;
+		}
+		return null;
+	}
+
+	Future<List<TimeSlotDto>> getTimeSlots() async {
+		return List.unmodifiable(_timeSlots);
+	}
+
+	Future<List<TimeSlotDto>> getAvailableTimeSlots() async {
+		return List.unmodifiable(
+			_timeSlots.where(
+				(timeSlot) =>
+						timeSlot.status == 'available' &&
+						timeSlot.currentBookings < timeSlot.maxCapacity,
+			),
+		);
+	}
+
+	Future<List<TimeSlotDto>> getTimeSlotsByDoctorAndDate(
+		int doctorId,
+		DateTime date,
+	) async {
+		return List.unmodifiable(
+			_timeSlots.where(
+				(timeSlot) =>
+						timeSlot.doctorId == doctorId &&
+						timeSlot.date.year == date.year &&
+						timeSlot.date.month == date.month &&
+						timeSlot.date.day == date.day,
+			),
+		);
+	}
+
+	Future<void> updateTimeSlot(TimeSlotDto timeSlot) async {
+		final index = _timeSlots.indexWhere((current) => current.id == timeSlot.id);
+		if (index == -1) {
+			throw StateError('Time slot not found');
+		}
+		_timeSlots[index] = timeSlot;
+	}
+}
