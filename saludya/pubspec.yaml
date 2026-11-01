@@ -13,6 +13,7 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   get_it: 9.3.0
   http: 1.6.0
+  mobile_scanner: ^6.0.0
   path: 1.9.1
   sqflite: 2.4.5
 
