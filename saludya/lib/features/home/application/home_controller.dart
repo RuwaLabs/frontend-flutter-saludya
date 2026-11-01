@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
+
 import '../domain/home_models.dart';
 import '../domain/home_repository.dart';
 
 class HomeController extends ChangeNotifier {
-  HomeController(this.repository, {DateTime Function()? clock}) : clock = clock ?? DateTime.now;
+  HomeController(this.repository, {DateTime Function()? clock})
+    : clock = clock ?? DateTime.now;
   final HomeRepository repository;
   final DateTime Function() clock;
   HomeSummary? summary;
@@ -27,7 +29,9 @@ class HomeController extends ChangeNotifier {
       summary = null;
     } catch (_) {
       if (_disposed || request != _request) return;
-      error = const HomeFailure('No pudimos cargar el inicio. Vuelve a intentar.');
+      error = const HomeFailure(
+        'No pudimos cargar el inicio. Vuelve a intentar.',
+      );
       summary = null;
     } finally {
       if (!_disposed && request == _request) {
@@ -38,5 +42,8 @@ class HomeController extends ChangeNotifier {
   }
 
   @override
-  void dispose() { _disposed = true; super.dispose(); }
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 }

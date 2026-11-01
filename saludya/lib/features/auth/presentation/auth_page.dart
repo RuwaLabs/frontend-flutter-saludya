@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../home/presentation/staff_home_page.dart';
 
 import '../../../core/di/service_locator.dart';
@@ -69,7 +70,7 @@ class _AuthPageState extends State<AuthPage> {
       if (mounted) setState(() => _error = e.message);
     } catch (_) {
       if (mounted) {
-        setState(() => _error = 'No se pudo completar la operaciÃ³n.');
+        setState(() => _error = 'No se pudo completar la operación.');
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -90,7 +91,7 @@ class _AuthPageState extends State<AuthPage> {
 
   Future<void> _verify() => _run(() async {
     if (_code.text.trim().length < 4) {
-      setState(() => _error = 'Ingresa el cÃ³digo recibido por correo.');
+      setState(() => _error = 'Ingresa el código recibido por correo.');
       return;
     }
     final session = await _auth.verifyCode(_challenge!.id, _code.text);
@@ -111,7 +112,7 @@ class _AuthPageState extends State<AuthPage> {
   Future<void> _verifyRecoveryCode() => _run(() async {
     if (_recoveryCode.text.trim().length != 6) {
       setState(
-        () => _error = 'Ingresa el cÃ³digo de 6 dÃ­gitos recibido por correo.',
+        () => _error = 'Ingresa el código de 6 dígitos recibido por correo.',
       );
       return;
     }
@@ -145,7 +146,7 @@ class _AuthPageState extends State<AuthPage> {
         _newPassword.text != _confirmPassword.text) {
       setState(
         () => _error =
-            'Ingresa dos contraseÃ±as iguales de al menos 8 caracteres.',
+            'Ingresa dos contraseñas iguales de al menos 8 caracteres.',
       );
       return;
     }
@@ -162,7 +163,7 @@ class _AuthPageState extends State<AuthPage> {
         _password.clear();
         _newPassword.clear();
         _confirmPassword.clear();
-        _notice = 'ContraseÃ±a actualizada. Ya puedes iniciar sesiÃ³n.';
+        _notice = 'Contraseña actualizada. Ya puedes iniciar sesión.';
       });
     }
   });
@@ -171,9 +172,19 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     if (_session != null) {
-      return StaffHomePage(auth: _auth, onSignedOut: () {
-        if (mounted) setState(() { _session = null; _challenge = null; _code.clear(); });
-      });
+      return StaffHomePage(
+        auth: _auth,
+        onSignedOut: () {
+          if (mounted) {
+            setState(() {
+              _session = null;
+              _challenge = null;
+              _code.clear();
+              _password.clear();
+            });
+          }
+        },
+      );
     }
     return Scaffold(
       body: SafeArea(
@@ -233,10 +244,10 @@ class _AuthPageState extends State<AuthPage> {
       const SizedBox(height: 34),
       Text(
         _reset
-            ? 'Restablecer contraseÃ±a'
+            ? 'Restablecer contraseña'
             : _recovery
             ? 'Recuperar acceso'
-            : 'Iniciar sesiÃ³n',
+            : 'Iniciar sesión',
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
         ),
@@ -245,19 +256,19 @@ class _AuthPageState extends State<AuthPage> {
       if (_reset) ...[
         _field(
           _newPassword,
-          'Nueva contraseÃ±a',
+          'Nueva contraseña',
           icon: Icons.lock_outline,
           obscure: true,
         ),
         const SizedBox(height: 14),
         _field(
           _confirmPassword,
-          'Confirmar contraseÃ±a',
+          'Confirmar contraseña',
           icon: Icons.lock_outline,
           obscure: true,
         ),
         const SizedBox(height: 22),
-        _button('Guardar contraseÃ±a', _resetPassword),
+        _button('Guardar contraseña', _resetPassword),
         TextButton(
           onPressed: () => setState(() {
             _reset = false;
@@ -273,18 +284,18 @@ class _AuthPageState extends State<AuthPage> {
             children: [
               _field(
                 _email,
-                'Correo electrÃ³nico',
+                'Correo electrónico',
                 icon: Icons.mail_outline,
                 keyboard: TextInputType.emailAddress,
                 validator: (v) => v == null || !v.contains('@')
-                    ? 'Ingresa un correo vÃ¡lido'
+                    ? 'Ingresa un correo válido'
                     : null,
               ),
               if (!_recovery) ...[
                 const SizedBox(height: 14),
                 _field(
                   _password,
-                  'ContraseÃ±a',
+                  'Contraseña',
                   icon: Icons.lock_outline,
                   obscure: !_showPassword,
                   suffix: IconButton(
@@ -295,7 +306,7 @@ class _AuthPageState extends State<AuthPage> {
                         setState(() => _showPassword = !_showPassword),
                   ),
                   validator: (v) =>
-                      v == null || v.isEmpty ? 'Ingresa tu contraseÃ±a' : null,
+                      v == null || v.isEmpty ? 'Ingresa tu contraseña' : null,
                 ),
               ],
             ],
@@ -309,13 +320,13 @@ class _AuthPageState extends State<AuthPage> {
                 _recovery = true;
                 _error = null;
               }),
-              child: const Text('Â¿Olvidaste tu contraseÃ±a?'),
+              child: const Text('¿Olvidaste tu contraseña?'),
             ),
           )
         else
           const SizedBox(height: 22),
         _button(
-          _recovery ? 'Enviar cÃ³digo al correo' : 'Continuar',
+          _recovery ? 'Enviar código al correo' : 'Continuar',
           _recovery ? _recover : _login,
         ),
         if (_recovery)
@@ -325,7 +336,7 @@ class _AuthPageState extends State<AuthPage> {
               _error = null;
               _notice = null;
             }),
-            child: const Text('Volver al inicio de sesiÃ³n'),
+            child: const Text('Volver al inicio de sesión'),
           ),
       ],
       _messages(theme),
@@ -344,11 +355,11 @@ class _AuthPageState extends State<AuthPage> {
         ),
       ),
       const SizedBox(height: 8),
-      Text('Enviamos un cÃ³digo a ${_challenge!.maskedEmail}.'),
+      Text('Enviamos un código a ${_challenge!.maskedEmail}.'),
       const SizedBox(height: 24),
       _field(
         _code,
-        'CÃ³digo de verificaciÃ³n',
+        'Código de verificación',
         icon: Icons.password,
         keyboard: TextInputType.number,
       ),
@@ -356,7 +367,7 @@ class _AuthPageState extends State<AuthPage> {
       _button('Verificar e ingresar', _verify),
       TextButton(
         onPressed: () => _run(() => _auth.resendCode(_challenge!.id)),
-        child: const Text('Reenviar cÃ³digo'),
+        child: const Text('Reenviar código'),
       ),
       TextButton(
         onPressed: () => setState(() {
@@ -383,20 +394,20 @@ class _AuthPageState extends State<AuthPage> {
       ),
       const SizedBox(height: 8),
       Text(
-        'Si la cuenta estÃ¡ activa, enviamos un cÃ³digo a ${_recoveryChallenge!.maskedEmail}.',
+        'Si la cuenta está activa, enviamos un código a ${_recoveryChallenge!.maskedEmail}.',
       ),
       const SizedBox(height: 24),
       _field(
         _recoveryCode,
-        'CÃ³digo de 6 dÃ­gitos',
+        'Código de 6 dígitos',
         icon: Icons.password,
         keyboard: TextInputType.number,
       ),
       const SizedBox(height: 20),
-      _button('Verificar cÃ³digo', _verifyRecoveryCode),
+      _button('Verificar código', _verifyRecoveryCode),
       TextButton(
         onPressed: _resendRecoveryCode,
-        child: const Text('Reenviar cÃ³digo'),
+        child: const Text('Reenviar código'),
       ),
       TextButton(
         onPressed: () => setState(() {
