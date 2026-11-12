@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:saludya/core/config/app_config.dart';
 import 'package:saludya/features/settings/application/get_establishment_settings_use_case.dart';
 import 'package:saludya/features/settings/application/update_establishment_settings_use_case.dart';
 import 'package:saludya/features/settings/domain/settings_repository.dart';
@@ -18,8 +19,16 @@ void setupDependencies() {
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton(() => AuthService(sl()));
 
-  const baseUrl = 'http://3.129.217.49:8080';
-  sl.registerLazySingleton<SettingsApi>(() => SettingsApi(baseUrl: baseUrl));
+  final settingsBaseUrl = AppConfig.apiBaseUrl.replaceFirst(
+    RegExp(r'/api/v1/?$'),
+    '',
+  );
+  sl.registerLazySingleton<SettingsApi>(
+    () => SettingsApi(
+      baseUrl: settingsBaseUrl,
+      tokenProvider: () => sl<FlutterSecureStorage>().read(key: 'access_token'),
+    ),
+  );
   sl.registerLazySingleton<SettingsRepository>(
     () => SettingsRepositoryImpl(api: sl<SettingsApi>()),
   );
@@ -27,6 +36,8 @@ void setupDependencies() {
     () => GetEstablishmentSettingsUseCase(repository: sl<SettingsRepository>()),
   );
   sl.registerLazySingleton<UpdateEstablishmentSettingsUseCase>(
-    () => UpdateEstablishmentSettingsUseCase(repository: sl<SettingsRepository>()),
+    () => UpdateEstablishmentSettingsUseCase(
+      repository: sl<SettingsRepository>(),
+    ),
   );
 }

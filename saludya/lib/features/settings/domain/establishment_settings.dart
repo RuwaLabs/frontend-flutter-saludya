@@ -1,11 +1,7 @@
-enum BookingOrderScope {
-  global,
-  perSpecialty,
-}
+enum BookingOrderScope { global, perSpecialty }
 
 class EstablishmentSettings {
   final int maxCapacityPerSlot;
-  final int intervalDurationMinutes;
   final BookingOrderScope bookingOrderScope;
   final int checkInToleranceMinutes;
   final int postCallToleranceMinutes;
@@ -16,7 +12,6 @@ class EstablishmentSettings {
 
   const EstablishmentSettings({
     required this.maxCapacityPerSlot,
-    required this.intervalDurationMinutes,
     required this.bookingOrderScope,
     required this.checkInToleranceMinutes,
     required this.postCallToleranceMinutes,
@@ -33,18 +28,12 @@ class EstablishmentSettings {
       errors.add('La capacidad máxima debe ser mayor que cero.');
     }
 
-    if (intervalDurationMinutes <= 0) {
-      errors.add('La duración del intervalo debe ser mayor que cero.');
-    }
-
     if (checkInToleranceMinutes < 0) {
       errors.add('La tolerancia de llegada no puede ser negativa.');
     }
 
     if (postCallToleranceMinutes < 0) {
-      errors.add(
-        'La tolerancia posterior a la llamada no puede ser negativa.',
-      );
+      errors.add('La tolerancia posterior a la llamada no puede ser negativa.');
     }
 
     if (reassignmentResponseTimeoutMin < 0) {
@@ -68,7 +57,6 @@ class EstablishmentSettings {
 
   EstablishmentSettings copyWith({
     int? maxCapacityPerSlot,
-    int? intervalDurationMinutes,
     BookingOrderScope? bookingOrderScope,
     int? checkInToleranceMinutes,
     int? postCallToleranceMinutes,
@@ -78,21 +66,15 @@ class EstablishmentSettings {
     bool? attendanceQueueVisible,
   }) {
     return EstablishmentSettings(
-      maxCapacityPerSlot:
-          maxCapacityPerSlot ?? this.maxCapacityPerSlot,
-      intervalDurationMinutes:
-          intervalDurationMinutes ?? this.intervalDurationMinutes,
-      bookingOrderScope:
-          bookingOrderScope ?? this.bookingOrderScope,
+      maxCapacityPerSlot: maxCapacityPerSlot ?? this.maxCapacityPerSlot,
+      bookingOrderScope: bookingOrderScope ?? this.bookingOrderScope,
       checkInToleranceMinutes:
           checkInToleranceMinutes ?? this.checkInToleranceMinutes,
       postCallToleranceMinutes:
           postCallToleranceMinutes ?? this.postCallToleranceMinutes,
       reassignmentResponseTimeoutMin:
-          reassignmentResponseTimeoutMin ??
-          this.reassignmentResponseTimeoutMin,
-      bookingCutoffTime:
-          bookingCutoffTime ?? this.bookingCutoffTime,
+          reassignmentResponseTimeoutMin ?? this.reassignmentResponseTimeoutMin,
+      bookingCutoffTime: bookingCutoffTime ?? this.bookingCutoffTime,
       cancellationDeadlineHours:
           cancellationDeadlineHours ?? this.cancellationDeadlineHours,
       attendanceQueueVisible:

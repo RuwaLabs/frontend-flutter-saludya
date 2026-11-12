@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/di/service_locator.dart';
+import '../../main/main_page.dart';
 import '../application/auth_service.dart';
 import '../domain/auth_models.dart';
 
@@ -168,6 +169,14 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_session != null) {
+      return MainPage(
+        onLogout: () => _run(() async {
+          await _auth.logout();
+          if (mounted) setState(() => _session = null);
+        }),
+      );
+    }
     final theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(
@@ -176,9 +185,7 @@ class _AuthPageState extends State<AuthPage> {
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 430),
-              child: _session != null
-                  ? _signedIn(theme)
-                  : _challenge != null
+              child: _challenge != null
                   ? _verification(theme)
                   : _recoveryChallenge != null
                   ? _recoveryVerification(theme)
@@ -402,29 +409,6 @@ class _AuthPageState extends State<AuthPage> {
           _error = null;
         }),
         child: const Text('Volver'),
-      ),
-      _messages(theme),
-    ],
-  );
-
-  Widget _signedIn(ThemeData theme) => Column(
-    children: [
-      _brand(theme),
-      const SizedBox(height: 30),
-      const Icon(Icons.check_circle_outline, size: 54, color: Colors.green),
-      const SizedBox(height: 12),
-      Text('Sesión iniciada', style: theme.textTheme.titleLarge),
-      const SizedBox(height: 8),
-      Text('Rol: ${_session!.role}', style: theme.textTheme.bodyLarge),
-      const SizedBox(height: 26),
-      const Text('La sesión quedó guardada de forma segura.'),
-      const SizedBox(height: 20),
-      OutlinedButton(
-        onPressed: () => _run(() async {
-          await _auth.logout();
-          if (mounted) setState(() => _session = null);
-        }),
-        child: const Text('Cerrar sesión'),
       ),
       _messages(theme),
     ],

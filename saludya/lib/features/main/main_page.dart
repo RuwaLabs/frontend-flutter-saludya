@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:saludya/features/settings/presentation/settings_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final Future<void> Function() onLogout;
+
+  const MainPage({super.key, required this.onLogout});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -12,16 +14,44 @@ class _MainPageState extends State<MainPage> {
   int selectedIndex = 3;
 
   final List<Widget> pages = [
-    const Center(child: Text('Inicio')),
-    const Center(child: Text('Calendario')),
-    const Center(child: Text('Cita')),
+    const Center(child: Text('Inicio: módulo pendiente de implementar')),
+    const Center(child: Text('Calendario: módulo pendiente de implementar')),
+    const Center(child: Text('Citas: módulo pendiente de implementar')),
     const SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[selectedIndex],
+      body: Column(
+        children: [
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'SaludYa',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Cerrar sesión',
+                    onPressed: widget.onLogout,
+                    icon: const Icon(Icons.logout),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(child: pages[selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         height: 72,
         backgroundColor: Colors.white,

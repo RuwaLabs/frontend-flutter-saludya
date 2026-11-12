@@ -20,9 +20,7 @@ class RuleValidationDialog extends StatelessWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
         child: Column(
@@ -64,10 +62,7 @@ class RuleValidationDialog extends StatelessWidget {
                 ),
                 child: const Text(
                   'Corregir valor',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
               ),
             ),

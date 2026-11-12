@@ -35,16 +35,13 @@ class EstablishmentSettingsDto {
     );
   }
 
-  factory EstablishmentSettingsDto.fromDomain(
-    EstablishmentSettings settings,
-  ) {
+  factory EstablishmentSettingsDto.fromDomain(EstablishmentSettings settings) {
     return EstablishmentSettingsDto(
       maxCapacityPerSlot: settings.maxCapacityPerSlot,
       bookingOrderScope: _scopeToApi(settings.bookingOrderScope),
       checkInToleranceMinutes: settings.checkInToleranceMinutes,
       postCallToleranceMinutes: settings.postCallToleranceMinutes,
-      reassignmentResponseTimeoutMin:
-          settings.reassignmentResponseTimeoutMin,
+      reassignmentResponseTimeoutMin: settings.reassignmentResponseTimeoutMin,
       bookingCutoffTime: _timeToApi(settings.bookingCutoffTime),
       cancellationDeadlineHours: settings.cancellationDeadlineHours,
       attendanceQueueVisible: settings.attendanceQueueVisible,
@@ -53,9 +50,8 @@ class EstablishmentSettingsDto {
 
   EstablishmentSettings toDomain() {
     return EstablishmentSettings(
-  maxCapacityPerSlot: maxCapacityPerSlot,
-  intervalDurationMinutes: 30,
-  bookingOrderScope: _scopeFromApi(bookingOrderScope),
+      maxCapacityPerSlot: maxCapacityPerSlot,
+      bookingOrderScope: _scopeFromApi(bookingOrderScope),
       checkInToleranceMinutes: checkInToleranceMinutes,
       postCallToleranceMinutes: postCallToleranceMinutes,
       reassignmentResponseTimeoutMin: reassignmentResponseTimeoutMin,
@@ -101,15 +97,15 @@ class EstablishmentSettingsDto {
   }
 
   static String _normalizeTime(String value) {
-  final match = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$')
-      .firstMatch(value);
+    final match = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?$')
+        .firstMatch(value);
 
-  if (match == null) {
-    throw FormatException('Formato de hora no válido: $value');
+    if (match == null) {
+      throw FormatException('Formato de hora no válido: $value');
+    }
+
+    return '${match.group(1)}:${match.group(2)}';
   }
-
-  return '${match.group(1)}:${match.group(2)}';
-}
 
   static String _timeToApi(String value) {
     final normalized = _normalizeTime(value);

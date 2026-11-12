@@ -4,9 +4,7 @@ import 'package:saludya/features/settings/domain/settings_repository.dart';
 class UpdateEstablishmentSettingsUseCase {
   final SettingsRepository repository;
 
-  UpdateEstablishmentSettingsUseCase({
-    required this.repository,
-  });
+  UpdateEstablishmentSettingsUseCase({required this.repository});
 
   Future<void> execute(EstablishmentSettings settings) async {
     final errors = settings.validate();

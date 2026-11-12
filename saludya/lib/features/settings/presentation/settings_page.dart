@@ -188,25 +188,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> _saveInterval(int duration) async {
-    final settings = _settings;
-    if (settings == null || _isSaving) return;
-
-    final updatedSettings = settings.copyWith(
-      intervalDurationMinutes: duration,
-    );
-
-    final errors = updatedSettings.validate();
-
-    if (errors.isNotEmpty) {
-      throw Exception(errors.join('\n'));
-    }
-
-    setState(() {
-      _settings = updatedSettings;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,11 +214,7 @@ class _SettingsPageState extends State<SettingsPage> {
           return _buildContent();
         }
 
-        return IntervalsPage(
-          currentDuration: settings.intervalDurationMinutes,
-          onSave: _saveInterval,
-          onBack: _openMoreRules,
-        );
+        return IntervalsPage(onBack: _openMoreRules);
 
       case 3:
         final settings = _settings;
