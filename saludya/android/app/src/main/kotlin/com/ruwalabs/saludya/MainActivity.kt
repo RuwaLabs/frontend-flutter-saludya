@@ -1,4 +1,4 @@
-package com.example.saludya
+package com.ruwalabs.saludya
 
 import io.flutter.embedding.android.FlutterActivity
 
