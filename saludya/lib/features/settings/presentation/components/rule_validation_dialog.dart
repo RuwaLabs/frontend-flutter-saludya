@@ -10,9 +10,9 @@ class RuleValidationDialog extends StatelessWidget {
         'que cero y los tiempos y plazos no pueden ser negativos.',
   });
 
-  static const Color primaryColor = Color(0xFF009B78);
-  static const Color textColor = Color(0xFF263634);
-  static const Color secondaryTextColor = Color(0xFF607B78);
+  static const Color primaryColor = Color(0xFF0B8F6B);
+  static const Color textColor = Color(0xFF1C2B2A);
+  static const Color secondaryTextColor = Color(0xFF56706D);
 
   @override
   Widget build(BuildContext context) {

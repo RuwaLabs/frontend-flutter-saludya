@@ -6,6 +6,9 @@ import 'package:saludya/features/home/presentation/home_page.dart';
 import 'package:saludya/features/operations/domain/operations_models.dart';
 import 'package:saludya/features/settings/presentation/settings_page.dart';
 
+bool canEditGlobalSettings(String role) =>
+    const {'ADMISSION_STAFF', 'SUPER_ADMIN'}.contains(role);
+
 class MainPage extends StatefulWidget {
   final Future<void> Function() onLogout;
   final String role;
@@ -48,6 +51,47 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  Widget _navigationItem(int index, IconData icon, String label) => Expanded(
+    child: InkWell(
+      onTap: () => setState(() {
+        _selectedIndex = index;
+        _visitedIndexes.add(index);
+      }),
+      child: Container(
+        height: 61,
+        color: _selectedIndex == index ? SaludYaPalette.selected : Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 22,
+              color: _selectedIndex == index
+                  ? SaludYaPalette.primary
+                  : SaludYaPalette.secondaryText,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10,
+                color: _selectedIndex == index
+                    ? SaludYaPalette.primary
+                    : SaludYaPalette.secondaryText,
+                fontWeight: _selectedIndex == index
+                    ? FontWeight.w600
+                    : FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final pages = <Widget>[
@@ -63,13 +107,13 @@ class _MainPageState extends State<MainPage> {
         active: _selectedIndex == 2,
         initialCancelled: _openCancelled,
       ),
-      SettingsPage(canEdit: widget.role == 'SUPER_ADMIN'),
+      SettingsPage(canEdit: canEditGlobalSettings(widget.role)),
     ];
     const titles = [
-      'Inicio',
+      'Hola, equipo de admisión',
       'Calendario',
-      'Citas y atención',
-      'Configuración',
+      'Cola de atención',
+      'Configuración general',
     ];
 
     return Scaffold(
@@ -79,15 +123,16 @@ class _MainPageState extends State<MainPage> {
           SafeArea(
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 12, 4),
+              padding: const EdgeInsets.fromLTRB(24, 10, 12, 10),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
                       titles[_selectedIndex],
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 21,
+                        height: 1.45,
+                        fontWeight: FontWeight.w600,
                         color: SaludYaPalette.text,
                       ),
                     ),
@@ -117,38 +162,22 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      bottomNavigationBar: NavigationBar(
-        height: 72,
-        backgroundColor: Colors.white,
-        indicatorColor: SaludYaPalette.selected,
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (value) => setState(() {
-          _selectedIndex = value;
-          _visitedIndexes.add(value);
-        }),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Inicio',
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 72,
+          child: ColoredBox(
+            color: Colors.white,
+            child: Row(
+              children: [
+                _navigationItem(0, Icons.home_outlined, 'Inicio'),
+                _navigationItem(1, Icons.calendar_month_outlined, 'Calendario'),
+                _navigationItem(2, Icons.qr_code_scanner_outlined, 'Cita'),
+                _navigationItem(3, Icons.tune_outlined, 'Configuración'),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Calendario',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.people_alt_outlined),
-            selectedIcon: Icon(Icons.people_alt_rounded),
-            label: 'Citas',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.tune_outlined),
-            selectedIcon: Icon(Icons.tune_rounded),
-            label: 'Configuración',
-          ),
-        ],
+        ),
       ),
     );
   }

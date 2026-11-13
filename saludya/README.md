@@ -6,10 +6,10 @@ Staff authentication app (DDD): sign in with email/password and an emailed code;
 
 ```sh
 flutter pub get
-flutter run --dart-define=API_BASE_URL=http://3.129.217.49:8080/api/v1
+flutter run
 ```
 
-`API_BASE_URL` is a compile-time setting; pass the backend `/api/v1` URL with `--dart-define`. For the Android emulator with a local backend, use `http://10.0.2.2:8080/api/v1`. The deployed EC2 host above is currently allowlisted for HTTP testing. Use HTTPS in production and never put credentials or tokens in build-time configuration.
+`API_BASE_URL` is a compile-time setting and defaults to the deployed demo backend (`http://3.129.217.49:8080/api/v1`) so the app connects when started directly from Android Studio. For an Android emulator with a local backend, override it with `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080/api/v1`. The demo EC2 host is temporarily allowlisted for HTTP testing; use HTTPS in production and never put credentials or tokens in build-time configuration.
 
 ## Checks
 

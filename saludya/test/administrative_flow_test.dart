@@ -26,13 +26,13 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 100));
-      expect(find.text('Citas de hoy'), findsOneWidget);
+      expect(find.text('Citas pendientes'), findsOneWidget);
 
       await tester.tap(find.text('Calendario').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Medicina general'));
       await tester.pumpAndSettle();
-      expect(find.text('Agenda operativa'), findsOneWidget);
+      expect(find.text('Medicina general'), findsOneWidget);
       await tester.dragUntilVisible(
         find.text('09:00–09:30'),
         find.byType(ListView).last,
@@ -45,7 +45,7 @@ void main() {
       await tester.tap(find.text('Ver cola presencial'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Citas').last);
+      await tester.tap(find.text('Cita').last);
       await tester.pump(const Duration(milliseconds: 100));
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.text('Sin pacientes en espera'), findsOneWidget);

@@ -56,11 +56,8 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       children: [
         Text(
-          'Hola, equipo de admisión',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: SaludYaPalette.text,
-          ),
+          'Admisión · Centro de Salud',
+          style: const TextStyle(color: SaludYaPalette.secondaryText),
         ),
         const SizedBox(height: 4),
         Text(
@@ -103,67 +100,22 @@ class _HomePageState extends State<HomePage> {
             ),
           )
         else if (_metrics != null) ...[
-          SaludYaCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Citas de hoy',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: SaludYaPalette.text,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _MetricValue(
-                        label: 'Programadas',
-                        value: _metrics!.scheduled,
-                        icon: Icons.event_available_outlined,
-                      ),
-                    ),
-                    Expanded(
-                      child: _MetricValue(
-                        label: 'Pendientes',
-                        value: _metrics!.pending,
-                        icon: Icons.hourglass_bottom_rounded,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _MetricValue(
-                        label: 'Atendidas',
-                        value: _metrics!.attended,
-                        icon: Icons.check_circle_outline,
-                      ),
-                    ),
-                    Expanded(
-                      child: _MetricValue(
-                        label: 'Ausentes',
-                        value: _metrics!.absent,
-                        icon: Icons.person_off_outlined,
-                      ),
-                    ),
-                  ],
-                ),
-                if (_metrics!.cancelled > 0) ...[
-                  const Divider(height: 24),
-                  TextButton.icon(
-                    onPressed: widget.onOpenCancelled,
-                    icon: const Icon(Icons.event_busy_outlined),
-                    label: Text(
-                      '${_metrics!.cancelled} citas canceladas · Ver detalle',
-                    ),
-                  ),
-                ],
-              ],
-            ),
+          _SummaryCard(
+            title: 'Citas pendientes',
+            lines: [
+              '${_metrics!.pending} ${_metrics!.pending == 1 ? 'reserva' : 'reservas'} para hoy',
+              '${_metrics!.scheduled} citas programadas',
+            ],
+            action: 'Ver calendario →',
+            onTap: widget.onOpenCalendar,
+          ),
+          _SummaryCard(
+            title: 'Citas canceladas',
+            lines: [
+              '${_metrics!.cancelled} ${_metrics!.cancelled == 1 ? 'cancelación' : 'cancelaciones'} de hoy',
+            ],
+            action: 'Ver detalle →',
+            onTap: widget.onOpenCancelled,
           ),
           if (_error != null) ...[
             const SizedBox(height: 8),
@@ -174,18 +126,10 @@ class _HomePageState extends State<HomePage> {
           ],
         ],
         const SizedBox(height: 20),
-        const Text(
-          'Accesos rápidos',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            color: SaludYaPalette.text,
-          ),
-        ),
-        const SizedBox(height: 12),
         FilledButton.icon(
-          onPressed: widget.onOpenCalendar,
-          icon: const Icon(Icons.calendar_month_outlined),
-          label: const Text('Abrir calendario operativo'),
+          onPressed: widget.onOpenAttendance,
+          icon: const Icon(Icons.qr_code_scanner_outlined),
+          label: const Text('Registrar llegada'),
           style: FilledButton.styleFrom(
             backgroundColor: SaludYaPalette.primary,
             minimumSize: const Size.fromHeight(50),
@@ -195,7 +139,7 @@ class _HomePageState extends State<HomePage> {
         OutlinedButton.icon(
           onPressed: widget.onOpenAttendance,
           icon: const Icon(Icons.people_alt_outlined),
-          label: const Text('Registrar llegada / abrir cola'),
+          label: const Text('Ver cola de atención'),
           style: OutlinedButton.styleFrom(
             foregroundColor: SaludYaPalette.primary,
             minimumSize: const Size.fromHeight(50),
@@ -206,44 +150,72 @@ class _HomePageState extends State<HomePage> {
   );
 }
 
-class _MetricValue extends StatelessWidget {
-  final String label;
-  final int value;
-  final IconData icon;
+class _SummaryCard extends StatelessWidget {
+  final String title;
+  final List<String> lines;
+  final String action;
+  final VoidCallback onTap;
 
-  const _MetricValue({
-    required this.label,
-    required this.value,
-    required this.icon,
+  const _SummaryCard({
+    required this.title,
+    required this.lines,
+    required this.action,
+    required this.onTap,
   });
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Icon(icon, color: SaludYaPalette.primary, size: 20),
-      const SizedBox(width: 8),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$value',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: SaludYaPalette.primary,
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: SaludYaPalette.border),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.45,
+                  fontWeight: FontWeight.w600,
+                  color: SaludYaPalette.text,
+                ),
               ),
-            ),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12,
-                color: SaludYaPalette.secondaryText,
+              for (final line in lines)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    line,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.45,
+                      color: SaludYaPalette.secondaryText,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 8),
+              Text(
+                action,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: SaludYaPalette.primary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ],
+    ),
   );
 }

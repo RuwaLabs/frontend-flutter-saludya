@@ -260,17 +260,11 @@ class _CalendarPageState extends State<CalendarPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Agenda operativa',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: SaludYaPalette.text,
-                      ),
-                    ),
                     Text(
                       _selectedSpecialty!.name,
                       style: const TextStyle(
+                        fontSize: 17,
+                        height: 1.3,
                         color: SaludYaPalette.primary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -423,64 +417,73 @@ class _CalendarPageState extends State<CalendarPage> {
     padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
     children: [
       const Text(
-        'Elige especialidad',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          color: SaludYaPalette.text,
-        ),
-      ),
-      const SizedBox(height: 8),
-      const Text(
-        'Selecciona el área para consultar y gestionar sus bloques.',
+        'Selecciona una especialidad para consultar su disponibilidad.',
         style: TextStyle(color: SaludYaPalette.secondaryText),
       ),
       const SizedBox(height: 16),
-      ..._specialties.map(
-        (specialty) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: InkWell(
+      GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _specialties.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 1.08,
+        ),
+        itemBuilder: (context, index) {
+          final specialty = _specialties[index];
+          return Material(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(16),
-            onTap: () => _chooseSpecialty(specialty),
-            child: SaludYaCard(
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.medical_services_outlined,
-                    color: SaludYaPalette.primary,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          specialty.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: SaludYaPalette.text,
-                          ),
-                        ),
-                        if (specialty.description.isNotEmpty)
-                          Text(
-                            specialty.description,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: SaludYaPalette.secondaryText,
-                            ),
-                          ),
-                      ],
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => _chooseSpecialty(specialty),
+              child: SaludYaCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: SaludYaPalette.selected,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.medical_services_outlined,
+                        size: 18,
+                        color: SaludYaPalette.primary,
+                      ),
                     ),
-                  ),
-                  const Icon(
-                    Icons.chevron_right,
-                    color: SaludYaPalette.primary,
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    Text(
+                      specialty.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.35,
+                        fontWeight: FontWeight.w600,
+                        color: SaludYaPalette.text,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Text(
+                      'Ver disponibilidad',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: SaludYaPalette.primary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     ],
   );

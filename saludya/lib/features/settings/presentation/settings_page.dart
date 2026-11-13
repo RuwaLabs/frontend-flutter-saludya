@@ -14,11 +14,11 @@ class SettingsPage extends StatefulWidget {
 
   const SettingsPage({super.key, this.canEdit = true});
 
-  static const Color backgroundColor = Color(0xFFF4F9F7);
-  static const Color primaryColor = Color(0xFF009B78);
-  static const Color textColor = Color(0xFF263634);
-  static const Color secondaryTextColor = Color(0xFF607B78);
-  static const Color borderColor = Color(0xFFD5E5DF);
+  static const Color backgroundColor = Color(0xFFF4FAF8);
+  static const Color primaryColor = Color(0xFF0B8F6B);
+  static const Color textColor = Color(0xFF1C2B2A);
+  static const Color secondaryTextColor = Color(0xFF56706D);
+  static const Color borderColor = Color(0xFFD8E6E2);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -317,32 +317,10 @@ class _SettingsPageState extends State<SettingsPage> {
     final settings = _settings!;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 14, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.maybePop(context),
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  size: 19,
-                  color: SettingsPage.primaryColor,
-                ),
-              ),
-              const SizedBox(width: 17),
-              const Text(
-                'Configuración general',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: SettingsPage.textColor,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 42),
           const Text(
             'Reglas del establecimiento',
             style: TextStyle(

@@ -375,15 +375,7 @@ class _AttendancePageState extends State<AttendancePage> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         children: [
-          const Text(
-            'Citas y atención',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: SaludYaPalette.text,
-            ),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           SegmentedButton<bool>(
             segments: const [
               ButtonSegment(
