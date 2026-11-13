@@ -2,6 +2,7 @@ import 'package:saludya/features/settings/domain/establishment_settings.dart';
 
 class EstablishmentSettingsDto {
   final int maxCapacityPerSlot;
+  final int? intervalDurationMinutes;
   final String bookingOrderScope;
   final int checkInToleranceMinutes;
   final int postCallToleranceMinutes;
@@ -12,6 +13,7 @@ class EstablishmentSettingsDto {
 
   const EstablishmentSettingsDto({
     required this.maxCapacityPerSlot,
+    this.intervalDurationMinutes,
     required this.bookingOrderScope,
     required this.checkInToleranceMinutes,
     required this.postCallToleranceMinutes,
@@ -24,6 +26,8 @@ class EstablishmentSettingsDto {
   factory EstablishmentSettingsDto.fromJson(Map<String, dynamic> json) {
     return EstablishmentSettingsDto(
       maxCapacityPerSlot: json['maxCapacityPerSlot'] as int,
+      intervalDurationMinutes: (json['intervalDurationMinutes'] as num?)
+          ?.toInt(),
       bookingOrderScope: json['bookingOrderScope'] as String,
       checkInToleranceMinutes: json['checkInToleranceMinutes'] as int,
       postCallToleranceMinutes: json['postCallToleranceMinutes'] as int,
@@ -38,6 +42,7 @@ class EstablishmentSettingsDto {
   factory EstablishmentSettingsDto.fromDomain(EstablishmentSettings settings) {
     return EstablishmentSettingsDto(
       maxCapacityPerSlot: settings.maxCapacityPerSlot,
+      intervalDurationMinutes: settings.intervalDurationMinutes,
       bookingOrderScope: _scopeToApi(settings.bookingOrderScope),
       checkInToleranceMinutes: settings.checkInToleranceMinutes,
       postCallToleranceMinutes: settings.postCallToleranceMinutes,
@@ -51,6 +56,7 @@ class EstablishmentSettingsDto {
   EstablishmentSettings toDomain() {
     return EstablishmentSettings(
       maxCapacityPerSlot: maxCapacityPerSlot,
+      intervalDurationMinutes: intervalDurationMinutes,
       bookingOrderScope: _scopeFromApi(bookingOrderScope),
       checkInToleranceMinutes: checkInToleranceMinutes,
       postCallToleranceMinutes: postCallToleranceMinutes,
@@ -64,6 +70,8 @@ class EstablishmentSettingsDto {
   Map<String, dynamic> toJson() {
     return {
       'maxCapacityPerSlot': maxCapacityPerSlot,
+      if (intervalDurationMinutes != null)
+        'intervalDurationMinutes': intervalDurationMinutes,
       'bookingOrderScope': bookingOrderScope,
       'checkInToleranceMinutes': checkInToleranceMinutes,
       'postCallToleranceMinutes': postCallToleranceMinutes,

@@ -2,6 +2,7 @@ enum BookingOrderScope { global, perSpecialty }
 
 class EstablishmentSettings {
   final int maxCapacityPerSlot;
+  final int? intervalDurationMinutes;
   final BookingOrderScope bookingOrderScope;
   final int checkInToleranceMinutes;
   final int postCallToleranceMinutes;
@@ -12,6 +13,7 @@ class EstablishmentSettings {
 
   const EstablishmentSettings({
     required this.maxCapacityPerSlot,
+    this.intervalDurationMinutes,
     required this.bookingOrderScope,
     required this.checkInToleranceMinutes,
     required this.postCallToleranceMinutes,
@@ -26,6 +28,10 @@ class EstablishmentSettings {
 
     if (maxCapacityPerSlot <= 0) {
       errors.add('La capacidad máxima debe ser mayor que cero.');
+    }
+
+    if (intervalDurationMinutes != null && intervalDurationMinutes! <= 0) {
+      errors.add('La duración del intervalo debe ser mayor que cero.');
     }
 
     if (checkInToleranceMinutes < 0) {
@@ -57,6 +63,7 @@ class EstablishmentSettings {
 
   EstablishmentSettings copyWith({
     int? maxCapacityPerSlot,
+    int? intervalDurationMinutes,
     BookingOrderScope? bookingOrderScope,
     int? checkInToleranceMinutes,
     int? postCallToleranceMinutes,
@@ -67,6 +74,8 @@ class EstablishmentSettings {
   }) {
     return EstablishmentSettings(
       maxCapacityPerSlot: maxCapacityPerSlot ?? this.maxCapacityPerSlot,
+      intervalDurationMinutes:
+          intervalDurationMinutes ?? this.intervalDurationMinutes,
       bookingOrderScope: bookingOrderScope ?? this.bookingOrderScope,
       checkInToleranceMinutes:
           checkInToleranceMinutes ?? this.checkInToleranceMinutes,

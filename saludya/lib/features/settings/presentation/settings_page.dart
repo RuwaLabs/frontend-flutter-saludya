@@ -10,7 +10,9 @@ import 'package:saludya/features/settings/presentation/intervals_page.dart';
 import 'package:saludya/features/settings/presentation/edit_capacity_page.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final bool canEdit;
+
+  const SettingsPage({super.key, this.canEdit = true});
 
   static const Color backgroundColor = Color(0xFFF4F9F7);
   static const Color primaryColor = Color(0xFF009B78);
@@ -67,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
     required int initialValue,
     required EstablishmentSettings Function(int value) updateSettings,
   }) async {
-    if (_settings == null || _isSaving) return;
+    if (_settings == null || _isSaving || !widget.canEdit) return;
 
     final result = await showDialog<String>(
       context: context,
@@ -155,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _saveCapacity(int capacity) async {
     final settings = _settings;
-    if (settings == null) return;
+    if (settings == null || !widget.canEdit) return;
 
     final updatedSettings = settings.copyWith(maxCapacityPerSlot: capacity);
 
@@ -188,6 +190,29 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  Future<void> _saveInterval(int minutes) async {
+    final settings = _settings;
+    if (settings == null || _isSaving || !widget.canEdit) return;
+    final updated = settings.copyWith(intervalDurationMinutes: minutes);
+    final errors = updated.validate();
+    if (errors.isNotEmpty) throw Exception(errors.join('\n'));
+
+    setState(() => _isSaving = true);
+    try {
+      await getIt<UpdateEstablishmentSettingsUseCase>().execute(updated);
+      if (!mounted) return;
+      setState(() {
+        _settings = updated;
+        _isSaving = false;
+        _currentView = 1;
+      });
+      _showMessage('Intervalo actualizado correctamente.');
+    } catch (_) {
+      if (mounted) setState(() => _isSaving = false);
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,6 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
         return MoreRulesPage(
           onBack: _openGeneralSettings,
           onOpenIntervals: _openIntervals,
+          canEdit: widget.canEdit,
         );
 
       case 2:
@@ -214,7 +240,12 @@ class _SettingsPageState extends State<SettingsPage> {
           return _buildContent();
         }
 
-        return IntervalsPage(onBack: _openMoreRules);
+        return IntervalsPage(
+          currentDuration: settings.intervalDurationMinutes,
+          onSave: _saveInterval,
+          onBack: _openMoreRules,
+          canEdit: widget.canEdit,
+        );
 
       case 3:
         final settings = _settings;
@@ -321,47 +352,63 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           const SizedBox(height: 16),
+          if (!widget.canEdit)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: Text(
+                'Consulta de configuración: solo Super Admin puede editar estas reglas.',
+                style: TextStyle(color: SettingsPage.secondaryTextColor),
+              ),
+            ),
           _buildRuleCard(
             title: 'Capacidad por bloque',
             value: '${settings.maxCapacityPerSlot} pacientes',
-            onEdit: _openEditCapacity,
+            onEdit: widget.canEdit ? _openEditCapacity : null,
           ),
           const SizedBox(height: 14),
           _buildRuleCard(
             title: 'Tolerancia de llegada',
             value: '${settings.checkInToleranceMinutes} minutos',
-            onEdit: () => _editNumericRule(
-              title: 'Tolerancia de llegada',
-              currentValue: '${settings.checkInToleranceMinutes} minutos',
-              initialValue: settings.checkInToleranceMinutes,
-              updateSettings: (value) =>
-                  settings.copyWith(checkInToleranceMinutes: value),
-            ),
+            onEdit: widget.canEdit
+                ? () => _editNumericRule(
+                    title: 'Tolerancia de llegada',
+                    currentValue: '${settings.checkInToleranceMinutes} minutos',
+                    initialValue: settings.checkInToleranceMinutes,
+                    updateSettings: (value) =>
+                        settings.copyWith(checkInToleranceMinutes: value),
+                  )
+                : null,
           ),
           const SizedBox(height: 14),
           _buildRuleCard(
             title: 'Plazo después de llamada',
             value: '${settings.postCallToleranceMinutes} minutos',
-            onEdit: () => _editNumericRule(
-              title: 'Plazo después de llamada',
-              currentValue: '${settings.postCallToleranceMinutes} minutos',
-              initialValue: settings.postCallToleranceMinutes,
-              updateSettings: (value) =>
-                  settings.copyWith(postCallToleranceMinutes: value),
-            ),
+            onEdit: widget.canEdit
+                ? () => _editNumericRule(
+                    title: 'Plazo después de llamada',
+                    currentValue:
+                        '${settings.postCallToleranceMinutes} minutos',
+                    initialValue: settings.postCallToleranceMinutes,
+                    updateSettings: (value) =>
+                        settings.copyWith(postCallToleranceMinutes: value),
+                  )
+                : null,
           ),
           const SizedBox(height: 14),
           _buildRuleCard(
             title: 'Respuesta a reasignación',
             value: '${settings.reassignmentResponseTimeoutMin} minutos',
-            onEdit: () => _editNumericRule(
-              title: 'Respuesta a reasignación',
-              currentValue:
-                  '${settings.reassignmentResponseTimeoutMin} minutos',
-              initialValue: settings.reassignmentResponseTimeoutMin,
-              updateSettings: (value) =>
-                  settings.copyWith(reassignmentResponseTimeoutMin: value),
-            ),
+            onEdit: widget.canEdit
+                ? () => _editNumericRule(
+                    title: 'Respuesta a reasignación',
+                    currentValue:
+                        '${settings.reassignmentResponseTimeoutMin} minutos',
+                    initialValue: settings.reassignmentResponseTimeoutMin,
+                    updateSettings: (value) => settings.copyWith(
+                      reassignmentResponseTimeoutMin: value,
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(height: 14),
           SizedBox(
@@ -397,7 +444,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildRuleCard({
     required String title,
     required String value,
-    required VoidCallback onEdit,
+    required VoidCallback? onEdit,
   }) {
     return Container(
       width: double.infinity,
@@ -426,18 +473,20 @@ class _SettingsPageState extends State<SettingsPage> {
               color: SettingsPage.secondaryTextColor,
             ),
           ),
-          const SizedBox(height: 9),
-          GestureDetector(
-            onTap: _isSaving ? null : onEdit,
-            child: const Text(
-              'Editar →',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: SettingsPage.primaryColor,
+          if (onEdit != null) ...[
+            const SizedBox(height: 9),
+            GestureDetector(
+              onTap: _isSaving ? null : onEdit,
+              child: const Text(
+                'Editar →',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: SettingsPage.primaryColor,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

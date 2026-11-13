@@ -6,6 +6,9 @@ import 'package:saludya/features/settings/application/update_establishment_setti
 import 'package:saludya/features/settings/domain/settings_repository.dart';
 import 'package:saludya/features/settings/infrastructure/remote/settings_api.dart';
 import 'package:saludya/features/settings/infrastructure/settings_repository_impl.dart';
+import 'package:saludya/features/operations/domain/operations_repository.dart';
+import 'package:saludya/features/operations/infrastructure/operations_repository_impl.dart';
+import 'package:saludya/features/operations/infrastructure/remote/operations_api.dart';
 
 import '../../features/auth/application/auth_service.dart';
 import '../../features/auth/domain/auth_repository.dart';
@@ -18,6 +21,15 @@ void setupDependencies() {
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton(() => AuthService(sl()));
+
+  sl.registerLazySingleton<OperationsApi>(
+    () => OperationsApi(
+      tokenProvider: () => sl<FlutterSecureStorage>().read(key: 'access_token'),
+    ),
+  );
+  sl.registerLazySingleton<OperationsRepository>(
+    () => OperationsRepositoryImpl(api: sl<OperationsApi>()),
+  );
 
   final settingsBaseUrl = AppConfig.apiBaseUrl.replaceFirst(
     RegExp(r'/api/v1/?$'),

@@ -171,6 +171,7 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     if (_session != null) {
       return MainPage(
+        role: _session!.role,
         onLogout: () => _run(() async {
           await _auth.logout();
           if (mounted) setState(() => _session = null);

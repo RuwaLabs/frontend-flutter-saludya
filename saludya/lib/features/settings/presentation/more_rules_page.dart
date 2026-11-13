@@ -9,11 +9,13 @@ import 'package:saludya/features/settings/presentation/components/rule_edit_dial
 class MoreRulesPage extends StatefulWidget {
   final VoidCallback onBack;
   final VoidCallback onOpenIntervals;
+  final bool canEdit;
 
   const MoreRulesPage({
     super.key,
     required this.onBack,
     required this.onOpenIntervals,
+    this.canEdit = true,
   });
 
   static const Color backgroundColor = Color(0xFFF4F9F7);
@@ -66,7 +68,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
   }
 
   Future<void> _saveSettings(EstablishmentSettings updatedSettings) async {
-    if (_isSaving) return;
+    if (_isSaving || !widget.canEdit) return;
 
     final errors = updatedSettings.validate();
 
@@ -114,7 +116,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
 
   Future<void> _editCancellationDeadline() async {
     final settings = _settings;
-    if (settings == null || _isSaving) return;
+    if (settings == null || _isSaving || !widget.canEdit) return;
 
     final result = await showDialog<String>(
       context: context,
@@ -139,7 +141,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
 
   Future<void> _editBookingCutoffTime() async {
     final settings = _settings;
-    if (settings == null || _isSaving) return;
+    if (settings == null || _isSaving || !widget.canEdit) return;
 
     final parts = settings.bookingCutoffTime.split(':');
 
@@ -174,7 +176,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
 
   Future<void> _editBookingOrderScope() async {
     final settings = _settings;
-    if (settings == null || _isSaving) return;
+    if (settings == null || _isSaving || !widget.canEdit) return;
 
     final selectedScope = await showDialog<BookingOrderScope>(
       context: context,
@@ -204,7 +206,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
 
   Future<void> _editAttendanceQueueVisibility() async {
     final settings = _settings;
-    if (settings == null || _isSaving) return;
+    if (settings == null || _isSaving || !widget.canEdit) return;
 
     final selectedValue = await showDialog<bool>(
       context: context,
@@ -334,7 +336,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
           _buildRuleCard(
             title: 'Hora límite para reservar',
             value: settings.bookingCutoffTime,
-            onEdit: _editBookingCutoffTime,
+            onEdit: widget.canEdit ? _editBookingCutoffTime : null,
           ),
 
           const SizedBox(height: 14),
@@ -342,7 +344,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
           _buildRuleCard(
             title: 'Anticipación para cancelar',
             value: '${settings.cancellationDeadlineHours} horas',
-            onEdit: _editCancellationDeadline,
+            onEdit: widget.canEdit ? _editCancellationDeadline : null,
           ),
 
           const SizedBox(height: 14),
@@ -350,7 +352,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
           _buildRuleCard(
             title: 'Prioridad de reasignación',
             value: _scopeLabel(settings.bookingOrderScope),
-            onEdit: _editBookingOrderScope,
+            onEdit: widget.canEdit ? _editBookingOrderScope : null,
           ),
 
           const SizedBox(height: 14),
@@ -358,7 +360,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
           _buildRuleCard(
             title: 'Posición de cola visible',
             value: settings.attendanceQueueVisible ? 'Sí' : 'No',
-            onEdit: _editAttendanceQueueVisibility,
+            onEdit: widget.canEdit ? _editAttendanceQueueVisibility : null,
           ),
 
           const SizedBox(height: 14),
@@ -404,7 +406,7 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
   Widget _buildRuleCard({
     required String title,
     required String value,
-    required VoidCallback onEdit,
+    required VoidCallback? onEdit,
   }) {
     return Container(
       width: double.infinity,
@@ -433,18 +435,20 @@ class _MoreRulesPageState extends State<MoreRulesPage> {
               color: MoreRulesPage.secondaryTextColor,
             ),
           ),
-          const SizedBox(height: 8),
-          GestureDetector(
-            onTap: _isSaving ? null : onEdit,
-            child: const Text(
-              'Editar →',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: MoreRulesPage.primaryColor,
+          if (onEdit != null) ...[
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: _isSaving ? null : onEdit,
+              child: const Text(
+                'Editar →',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: MoreRulesPage.primaryColor,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
